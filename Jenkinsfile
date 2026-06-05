@@ -19,6 +19,7 @@ pipeline {
                 echo 'Запуск изолированных юнит-тестов исходного кода Python...'
 
                 sh '''
+                pwd
                 python3 -m venv test_venv
                 ./test_venv/bin/pip install -r backend/requirements.txt
                 ./test_venv/bin/python backend/test_app.py
