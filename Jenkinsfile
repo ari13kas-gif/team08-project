@@ -30,9 +30,8 @@ pipeline {
         stage('Docker Deploy') {
             steps {
                 echo 'Юнит-тесты успешно пройдены. Запуск сборки и деплоя контейнеров...'
-
-                sh 'docker compose -p project_08 down'
-                sh 'docker compose -p project_08 up -d --build'
+                sh 'docker compose -f team08-project/docker-compose.yml -p project_08 down'
+                sh 'docker compose -f team08-project/docker-compose.yml -p project_08 up -d --build'
             }
         }
 
