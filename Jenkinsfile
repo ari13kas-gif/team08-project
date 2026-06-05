@@ -21,8 +21,8 @@ pipeline {
                 sh '''
                 pwd
                 python3 -m venv test_venv
-                ./test_venv/bin/pip install -r backend/requirements.txt
-                ./test_venv/bin/python backend/test_app.py
+                ./test_venv/bin/pip install -r team08-project/backend/requirements.txt
+                ./test_venv/bin/python team08-project/backend/test_app.py
                 '''
             }
         }
