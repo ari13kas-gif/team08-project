@@ -18,10 +18,13 @@ pipeline {
 
         stage('Docker Deploy') {
             steps {
-                echo 'Перезапускаем контейнеры команды project_08...'
-                // Явно указываем имя проекта через -p, чтобы перетереть прошлый деплой
-                sh 'docker compose -p project_08 down'
-                sh 'docker compose -p project_08 up -d --build'
+                // Заходим во вложенную папку проекта, где лежит docker-compose.yml
+                dir('team08-project') {
+                    echo 'Перезапускаем контейнеры команды project_08...'
+                    // Явно указываем имя проекта через -p, чтобы перетереть прошлый деплой
+                    sh 'docker compose -p project_08 down'
+                    sh 'docker compose -p project_08 up -d --build'
+                }
             }
         }
     }
