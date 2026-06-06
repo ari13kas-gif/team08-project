@@ -2,9 +2,13 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 import psycopg2
+from prometheus_flask_exporter import PrometheusMetrics
 
 app = Flask(__name__)
 CORS(app)
+
+metrics = PrometheusMetrics(app, path='/api/metrics')
+metrics.info('app_info', 'Application info', version='1.0.0')
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
 DB_NAME = os.getenv("DB_NAME", "notes_db_08")
@@ -13,6 +17,10 @@ DB_PASS = os.getenv("DB_PASS", "password123")
 
 def get_db_connection():
     return psycopg2.connect(host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASS)
+
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
 
 @app.route('/api/notes', methods=['GET'])
 def get_notes():
@@ -45,9 +53,5 @@ def add_notes():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/api/health', methods=['GET'])
-def health_check():
-# Легковесный эндпоинт для проверки статуса самого Flask-приложения
-    return jsonify({"status": "healthy"}), 200
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)

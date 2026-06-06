@@ -13,7 +13,6 @@ services:
       - "5408:5432"
     networks:
       - project_08-network
-
   backend:
     build: ./backend
     container_name: project_08-backend
@@ -28,7 +27,6 @@ services:
       - db
     networks:
       - project_08-network
-
   nginx:
     image: nginx:alpine
     container_name: project_08-nginx
@@ -41,10 +39,36 @@ services:
       - backend
     networks:
       - project_08-network
-
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: project_08-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - promdata_08:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    ports:
+      - "9008:9090"
+    depends_on:
+      - backend
+    networks:
+      - project_08-network
+  grafana:
+    image: grafana/grafana:10.0.0
+    container_name: project_08-grafana
+    ports:
+      - "3008:3000"
+    volumes:
+      - grafanadata_08:/var/lib/grafana
+    depends_on:
+      - prometheus
+    networks:
+      - project_08-network
 volumes:
   pgdata_08:
-
+  promdata_08:
+  grafanadata_08:
 networks:
   project_08-network:
     name: project_08-network
